@@ -190,9 +190,10 @@
         recordDistributionService.getChartData(entity, _config, records, iconDataCollections).then(function (response) {
           chartData = response;
         }).finally(function () {
-          ViewTemplateService.getSystemViewTemplates('', 'settings').then(function (response) {
-            if (response.data['hydra:member'].length > 0) {
-              _.each(response.data['hydra:member'], function (setting) {
+            let selectedFields = ['uuid','name','isDefault','importedBy'];
+            ViewTemplateService.getSystemViewTemplateList('', ['settings'], selectedFields).then(function(response) {
+            if (response['hydra:member'].length > 0) {
+              _.each(response['hydra:member'], function (setting) {
                 var moduleType = setting.uuid.split('-')[1];
                 if (_config.resource === moduleType && setting.config && setting.config.correlationConfig && setting.config.correlationConfig.$image) {
                   $scope.defaultImg = setting.config.correlationConfig.$image;
