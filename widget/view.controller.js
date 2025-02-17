@@ -1,6 +1,6 @@
 /* Copyright start
   MIT License
-  Copyright (c) 2024 Fortinet Inc
+  Copyright (c) 2025 Fortinet Inc
   Copyright end */
   
 'use strict';
@@ -9,9 +9,9 @@
     .module('cybersponse')
     .controller('recordDistribution103Ctrl', recordDistribution103Ctrl);
 
-  recordDistribution103Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService'];
+  recordDistribution103Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
 
-  function recordDistribution103Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService) {
+  function recordDistribution103Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
@@ -55,7 +55,11 @@
         }
       }
 
-      $scope.getList();
+      versionService.get('cyops_version').then(function (version) {
+        $scope.cyopsVersion = parseInt(version.version.split('.').join(''));
+      }).finally(function() {
+        $scope.getList();
+      });
     }
 
     /*
@@ -190,10 +194,23 @@
         recordDistributionService.getChartData(entity, _config, records, iconDataCollections).then(function (response) {
           chartData = response;
         }).finally(function () {
-          ViewTemplateService.getSystemViewTemplates('', 'settings').then(function (response) {
-            if (response.data['hydra:member'].length > 0) {
-              _.each(response.data['hydra:member'], function (setting) {
-                var moduleType = setting.uuid.split('-')[1];
+            let viewTemplatePromise;
+            if($scope.cyopsVersion < 762) {
+              viewTemplatePromise = ViewTemplateService.getSystemViewTemplates('', 'settings');
+            }else {
+              let selectedFields = ['uuid','name','isDefault','importedBy', 'config', 'module'];
+              viewTemplatePromise = ViewTemplateService.getSystemViewTemplateList('', ['settings'], selectedFields);
+            }
+            viewTemplatePromise.then(function(response) {
+              let result;
+              if($scope.cyopsVersion < 762) {
+                result = response.data['hydra:member'];
+              }else {
+                result = response['hydra:member'];
+              }
+              if (result.length > 0) {
+              _.each(result, function (setting) {
+                var moduleType = setting.module ? setting.module : setting.uuid.split('-')[1];
                 if (_config.resource === moduleType && setting.config && setting.config.correlationConfig && setting.config.correlationConfig.$image) {
                   $scope.defaultImg = setting.config.correlationConfig.$image;
                 }
