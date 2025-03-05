@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('recordDistribution103Ctrl', recordDistribution103Ctrl);
+    .controller('recordDistribution104Ctrl', recordDistribution104Ctrl);
 
-  recordDistribution103Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
+  recordDistribution104Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
 
-  function recordDistribution103Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
+  function recordDistribution104Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
