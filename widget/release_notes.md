@@ -1,8 +1,5 @@
 ### What's New
 
-- This widget is now **Certified**
-
-- Following fields now have a tooltip for enhanced understanding and providing input to these fields is now mandatory:
-  - Data Source
-  - Picklist
-  - Picklist Items
+- Implemented internationalization support for Japanese, Korean, and Simplified Chinese languages. 
+- Enhanced user experience by ensuring that custom grid filter settings are preserved when returning to the records list after viewing a record in detail
+  previously, only the default filter was applied, and custom settings were lost. 
