@@ -1,12 +1,17 @@
+/* Copyright start
+  MIT License
+  Copyright (c) 2025 Fortinet Inc
+  Copyright end */
+  
 'use strict';
 (function () {
   angular
     .module('cybersponse')
-    .controller('recordDistribution102Ctrl', recordDistribution102Ctrl);
+    .controller('recordDistribution104Ctrl', recordDistribution104Ctrl);
 
-  recordDistribution102Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules'];
+  recordDistribution104Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
 
-  function recordDistribution102Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules) {
+  function recordDistribution104Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
@@ -19,10 +24,23 @@
       $scope.page = $state.params.page;
     }
 
+    function _handleTranslations() {
+      widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
+        $scope.viewWidgetVars = {
+          // Create your translating static string variables here
+          'TXT_NO_RECS_FOUND': widgetUtilityService.translate('recordDistribution.TXT_NO_RECS_FOUND'),
+          'TXT_VIEW_ALL_RECS': widgetUtilityService.translate('recordDistribution.TXT_VIEW_ALL_RECS')
+        };
+      });
+    }
+
     /*
      * This method initialize required attributes, retrives icon field lookup modules.
      */
     function _init() {
+      // To handle backward compatibility for widget
+      _handleTranslations();
+
       if (entity) {
         var assignedToPerson = config.mapping.assignedToPerson;
         if (!angular.isUndefined(assignedToPerson) && !angular.isUndefined(entity.fields[assignedToPerson])) {
@@ -37,7 +55,11 @@
         }
       }
 
-      $scope.getList();
+      versionService.get('cyops_version').then(function (version) {
+        $scope.cyopsVersion = parseInt(version.version.split('.').join(''));
+      }).finally(function() {
+        $scope.getList();
+      });
     }
 
     /*
@@ -172,10 +194,23 @@
         recordDistributionService.getChartData(entity, _config, records, iconDataCollections).then(function (response) {
           chartData = response;
         }).finally(function () {
-          ViewTemplateService.getSystemViewTemplates('', 'settings').then(function (response) {
-            if (response.data['hydra:member'].length > 0) {
-              _.each(response.data['hydra:member'], function (setting) {
-                var moduleType = setting.uuid.split('-')[1];
+            let viewTemplatePromise;
+            if($scope.cyopsVersion < 762) {
+              viewTemplatePromise = ViewTemplateService.getSystemViewTemplates('', 'settings');
+            }else {
+              let selectedFields = ['uuid','name','isDefault','importedBy', 'config', 'module'];
+              viewTemplatePromise = ViewTemplateService.getSystemViewTemplateList('', ['settings'], selectedFields);
+            }
+            viewTemplatePromise.then(function(response) {
+              let result;
+              if($scope.cyopsVersion < 762) {
+                result = response.data['hydra:member'];
+              }else {
+                result = response['hydra:member'];
+              }
+              if (result.length > 0) {
+              _.each(result, function (setting) {
+                var moduleType = setting.module ? setting.module : setting.uuid.split('-')[1];
                 if (_config.resource === moduleType && setting.config && setting.config.correlationConfig && setting.config.correlationConfig.$image) {
                   $scope.defaultImg = setting.config.correlationConfig.$image;
                 }
@@ -264,7 +299,7 @@
           .attr('fill', backgroundColor);
 
         svg.append('text')
-          .text('No records found !')
+          .text($scope.viewWidgetVars.TXT_NO_RECS_FOUND)
           .attr('x', 20)
           .attr('y', 30)
           .attr('font-size', 16)
@@ -346,17 +381,18 @@
             operator: 'eq'
           };
           query.filters = query.filters.concat(addFilter);
-          var _q = { filters: $scope._minify(query.filters), logic: query.logic };
+          var widgetQuery = new Query();
+          widgetQuery.widgetQuery = { filters: $scope._minify(query.filters), logic: query.logic };
           $state.go('main.modules.list', {
             module: _config.resource,
-            query: encodeURIComponent(JSON.stringify(_q)),
+            query: encodeURIComponent(JSON.stringify(widgetQuery)),
             qparam: $state.params.qparam
           });
         });
 
       // View All Records Image Title
       viewMoreImage.append('title')
-        .text('View All Records');
+        .text($scope.viewWidgetVars.TXT_VIEW_ALL_RECS);
 
       // Category Text Rendering
       categoryRect.append('text')
