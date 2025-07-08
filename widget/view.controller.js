@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('recordDistribution104Ctrl', recordDistribution104Ctrl);
+    .controller('recordDistribution105Ctrl', recordDistribution105Ctrl);
 
-  recordDistribution104Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
+  recordDistribution105Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
 
-  function recordDistribution104Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
+  function recordDistribution105Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
@@ -386,7 +386,8 @@
           $state.go('main.modules.list', {
             module: _config.resource,
             query: encodeURIComponent(JSON.stringify(widgetQuery)),
-            qparam: $state.params.qparam
+            qparam: $state.params.qparam,
+            widgetParams: true
           });
         });
 
