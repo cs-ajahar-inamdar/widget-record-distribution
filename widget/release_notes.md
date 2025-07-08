@@ -1,3 +1,3 @@
 ### What's New
 
-- Updated the API call to incorporate the endpoint changes that affected the loading of record distribution visualization.
+- Ensured filters are correctly applied when navigating from the dashboard to the module listing via the record distribution widget.
