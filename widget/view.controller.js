@@ -3,16 +3,15 @@
   Copyright (c) 2026 Fortinet Inc
   Copyright end */
 
-/* global LZString */  
 'use strict';
 (function () {
   angular
     .module('cybersponse')
     .controller('recordDistribution106Ctrl', recordDistribution106Ctrl);
 
-  recordDistribution106Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService'];
+  recordDistribution106Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService', 'compressToEncodeURLService'];
 
-  function recordDistribution106Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService) {
+  function recordDistribution106Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService, compressToEncodeURLService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
@@ -393,9 +392,7 @@
           }
           $state.go('main.modules.list', {
             module: _config.resource,
-            query: LZString.compressToEncodedURIComponent(
-              JSON.stringify(widgetQuery)
-            ),
+            query: compressToEncodeURLService.compress(widgetQuery),
             qparam: $state.params.qparam,
             widgetParams: true
           });
