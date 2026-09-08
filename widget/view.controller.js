@@ -9,9 +9,9 @@
     .module('cybersponse')
     .controller('recordDistribution106Ctrl', recordDistribution106Ctrl);
 
-  recordDistribution106Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService', 'compressToEncodeURLService'];
+  recordDistribution106Ctrl.$inject = ['$scope', '$rootScope', 'config', '$state', '_', 'Entity', 'localStorageService', 'Query', 'API', '$resource', 'recordDistributionService', 'ViewTemplateService', 'appModulesService', '$interpolate', 'CommonUtils', 'Modules', 'widgetUtilityService', 'versionService', 'compressionService'];
 
-  function recordDistribution106Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService, compressToEncodeURLService) {
+  function recordDistribution106Ctrl($scope, $rootScope, config, $state, _, Entity, localStorageService, Query, API, $resource, recordDistributionService, ViewTemplateService, appModulesService, $interpolate, CommonUtils, Modules, widgetUtilityService, versionService, compressionService) {
     var entity = null;
     var chartData = { 'data': [], 'edges': [] };
     var _config = angular.copy(config);
@@ -392,7 +392,7 @@
           }
           $state.go('main.modules.list', {
             module: _config.resource,
-            query: compressToEncodeURLService.compress(widgetQuery),
+            query: compressionService.compressForUrl(widgetQuery),
             qparam: $state.params.qparam,
             widgetParams: true
           });
