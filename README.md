@@ -2,7 +2,7 @@
 
 - **Version**: 1.0.6
 
-- **Certified**: No
+- **Certified**: Yes
 
 - **Publisher**: Fortinet  
 
